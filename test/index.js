@@ -2,6 +2,9 @@
 
 // Load modules
 
+const Util = require('util');
+const Zlib = require('zlib');
+
 const Code = require('code');
 const Lab = require('lab');
 const Tarnish = require('..');
@@ -46,6 +49,21 @@ describe('Tarnish', () => {
 
         const files = await internals.unpack(tar);
         expect(files['big.dat']).to.equal(buffer.toString());
+    });
+
+    it('generates a tar.gz buffer', async () => {
+
+        const pack = new Tarnish.Pack();
+        pack.add('hello.txt', 'This is a hello file');
+        pack.add('image.jpg', Buffer.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]));
+        const gz = await pack.generate({ gzip: true });
+        const tar = await Util.promisify(Zlib.gunzip)(gz);
+
+        const files = await internals.unpack(tar);
+        expect(files).to.equal({
+            'hello.txt': 'This is a hello file',
+            'image.jpg': '\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\u0008\u0009'
+        });
     });
 });
 
