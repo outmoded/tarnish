@@ -1,7 +1,7 @@
 {
   "name": "tarnish",
   "description": "Merge buffers into tar buffer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "repository": "git://github.com/hueniverse/tarnish",
   "main": "lib/index.js",
   "keywords": [
